@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Task List</title>
+</head>
+<body class="h-dvh w-full flex justify-center p-8">
+
+    <div x-data="{
+
+        tasks: $persist([
+            {id: 1, name: 'Feed cats', complete: false},
+            {id: 2, name: 'Cook dinner', complete: false},
+            {id: 3, name: 'Mow lawn', complete: false}
+        ]),
+
+        addTask(text){
+
+            if(text.trim().length == 0){
+                return;
+            }
+
+            let task = {
+                id: Math.max(...this.tasks.map(t => t.id)) + 1,
+                name: text,
+                complete: false
+            }
+
+            this.tasks.push(task)
+            this.$refs.taskInput.value = ''
+        },
+        
+        deleteTask(task){
+            this.tasks = this.tasks.filter(t => t.id != task.id)
+        }
+
+    }">
+
+        <div class="text-xl bg-zinc-50 p-4 flex flex-col gap-y-8 w-lg">
+
+            <h1 class="text-5xl place-self-start">Task list</h1>
+
+            <div>
+            <template x-for="task in tasks" key="task.id">
+
+                <div class="grid grid-cols-[1fr_auto] gap-x-2 w-full">
+                    <div class="overflow-hidden text-ellipsis grow-1" :class="task.complete ? 'line-through' : ''" x-text="task.name"></div>
+                    <div class="flex gap-x-2">
+                        <input class="w-full" type="checkbox" x-model="task.complete">
+                        <button @click="deleteTask(task)">Delete</button>
+                    </div>
+                </div>
+
+            </template>
+            </div>
+
+            <div class="flex gap-x-2 w-full">
+                <input class="border rounded bg-white w-full" x-ref="taskInput" type="text">
+                <button class="shrink-0" @click="addTask($refs.taskInput.value)">Add task</button>
+            </div>
+
+
+        </div>
+
+    </div>
+    
+</body>
+</html>
