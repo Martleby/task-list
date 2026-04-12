@@ -60,14 +60,27 @@
             <ul x-sort="handleUpdate($item, $position)">
             <template x-for="task in tasks" :key="task.id">
 
-                <li x-sort:item="task.id" class="grid grid-cols-[1fr_auto] gap-x-2 w-full">
-                    <div class="overflow-hidden text-ellipsis grow-1 cursor-grab" 
-                         :class="task.complete ? 'line-through' : ''" 
-                         x-text="task.name"
-                         x-sort:handle>
+                <li 
+                    x-data="{editing: false}"
+                    x-sort:item="task.id" class="grid grid-cols-[1fr_auto] gap-x-2 w-full">
+                    <div class="relative">
+                        <div class="absolute w-full line-clamp-1 overflow-hidden text-ellipsis grow-1 cursor-grab active:cursor-grabbing" 
+                            :class="task.complete ? 'line-through' : ''" 
+                            x-text="task.name"
+                            x-sort:handle>
+                        </div>
+                        <div x-show="editing" class="absolute z-10 w-full bg-white flex gap-x-2">
+                            <input @keyup.enter="editing = false"
+                                class="w-full border-0" 
+                                x-model="task.name" 
+                                type="text"
+                                @edit.window="if($event.detail.id == task.id) $el.focus()">
+                            <button @click="editing = false;">✔</button>
+                        </div>
                     </div>
                     <div class="flex gap-x-4">
                         <input class="w-full" type="checkbox" x-model="task.complete">
+                        <button @click="editing = true; $nextTick(() => $dispatch('edit', {id: task.id}))">✏</button>
                         <button @click="deleteTask(task)">❌</button>
                     </div>
                 </li>
