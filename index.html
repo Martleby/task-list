@@ -14,44 +14,7 @@
 </head>
 <body class="h-dvh w-full flex justify-center p-8">
 
-    <div x-data="{
-
-        tasks: $persist([
-            
-        ]),
-
-        addTask(text){
-
-            if(text.trim().length == 0){
-                return;
-            }
-
-            let id = this.tasks.length ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1
-
-            let task = {
-                id: id,
-                name: text,
-                complete: false
-            }
-
-            this.tasks.push(task)
-            this.$refs.taskInput.value = ''
-        },
-        
-        deleteTask(task){
-            this.tasks = this.tasks.filter(t => t.id != task.id)
-        },
-
-        handleUpdate(item, position){
-            const task = this.tasks.find(t => t.id == item);
-            const oldIndex = this.tasks.indexOf(task);
-        
-            // Move the item in the array
-            this.tasks.splice(oldIndex, 1);
-            this.tasks.splice(position, 0, task);
-        }
-
-    }">
+    <div x-data="tasklist">
 
         <div class="text-xl bg-zinc-50 p-4 flex flex-col gap-y-8 w-lg">
 
@@ -100,6 +63,54 @@
         </div>
 
     </div>
+
+    <script>
+
+        document.addEventListener('alpine:init', () => {
+
+            Alpine.data('tasklist', function() {
+
+                return {
+                        tasks: this.$persist([
+                    
+                        ]),
+
+                        addTask(text){
+
+                            if(text.trim().length == 0){
+                                return;
+                            }
+
+                            let id = this.tasks.length ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1
+
+                            let task = {
+                                id: id,
+                                name: text,
+                                complete: false
+                            }
+
+                            this.tasks.push(task)
+                            this.$refs.taskInput.value = ''
+                        },
+                        
+                        deleteTask(task){
+                            this.tasks = this.tasks.filter(t => t.id != task.id)
+                        },
+
+                        handleUpdate(item, position){
+                            const task = this.tasks.find(t => t.id == item);
+                            const oldIndex = this.tasks.indexOf(task);
+                        
+                            // Move the item in the array
+                            this.tasks.splice(oldIndex, 1);
+                            this.tasks.splice(position, 0, task);
+                        }
+
+                }
+            })
+        })
+
+    </script>
     
 </body>
 </html>
