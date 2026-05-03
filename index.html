@@ -17,9 +17,7 @@
     <div x-data="{
 
         tasks: $persist([
-            {id: 1, name: 'Feed cats', complete: false},
-            {id: 2, name: 'Cook dinner', complete: false},
-            {id: 3, name: 'Mow lawn', complete: false}
+            
         ]),
 
         addTask(text){
@@ -28,8 +26,10 @@
                 return;
             }
 
+            let id = this.tasks.length ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1
+
             let task = {
-                id: Math.max(...this.tasks.map(t => t.id)) + 1,
+                id: id,
                 name: text,
                 complete: false
             }
